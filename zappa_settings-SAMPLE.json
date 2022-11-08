@@ -1,0 +1,16 @@
+{
+    "dev": {
+        "app_function": "app.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "<PLACEHOLDER>",
+        "runtime": "python3.8",
+        "s3_bucket": "<PLACEHOLDER>",
+        "keep_warm": false,
+        "timeout_seconds": 600,
+        "events": [{
+          "function": "app.getTurnout",
+          "expression": "rate(1 minute)"
+        }],
+    }
+}

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@trivisonno" />
+<meta property="og:url" content="https://cuyahogavoters.s3.amazonaws.com/map.html" />
+<meta property="og:title" content="Unofficial Election Results - Cuyahoga County" />
+<meta property="og:description" content="Thanks for visiting my map! This map uses real-time voting data shared online by the Cuyahoga Board of Elections." />
+<meta property="og:image" content="https://cuyahogavoters.s3.amazonaws.com/twitter-card.png" />
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HNNN5RC394"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'G-HNNN5RC394');
+	</script>
+	<title>Unofficial Election Results - Cuyahoga County</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+
+	<style>
+	html, body, #map {
+			height: 100%;
+			width: 100vw;
+
+	}
+	</style>
+
+	<style>
+	.info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; } .info h4 { margin: 0 0 5px; color: #777; }
+.legend { text-align: left; line-height: 20px; color: #555;} .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.8; }
+
+.progress-bar {
+	-webkit-transition: none !important;
+	transition: none !important;
+}
+</style>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+</head>
+<body>
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="exampleModalLabel">Happy Election Day! &#127881;</h4>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <p>Thanks for visiting my map! This map uses <a href="https://boe.cuyahogacounty.gov/en-US/livevoter.aspx" target="_blank">real-time voting data</a> shared online by the Cuyahoga Board of Elections.</p>
+	        <h5>New map features this Election:</h5>
+					<p><div class="progress" style="height:1rem"><div class="progress-bar bg-info" id="timerSample" role="progressbar" style="width:100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><span style="color:#000">Automatic 60sec refresh</span></div></div>
+					</p>
+					<p>New map legend colors <span style="color:#FAFAFA">&#9632;</span><span style="color:#E3E3F0">&#9632;</span><span style="color:#C7C7E2">&#9632;</span><span style="color:#ACACD4">&#9632;</span><span style="color:#9090C6">&#9632;</span><span style="color:#7474B8">&#9632;</span><span style="color:#5959AA">&#9632;</span><span style="color:#3D3D9C">&#9632;</span><span style="color:#21218E">&#9632;</span><span style="color:#060680">&#9632;</span></p>
+					<p>Full-screen mode <i class="fas fa-expand"></i> button for watching all day on larger screens</p>
+					<p>Precinct/ward toggle <i class="fas fa-sliders-h"></i> button (Cleveland wards only, sorry)</p>
+
+					<p>For prior elections, the map illustrated voter turnout %s. I've switched to vote totals for this Election, but you'll still find the turnout %s in the infobox!</p>
+	        <h5>Good luck to all campaigns!</h5>
+	        <p><em>-Angelo <a href="https://twitter.com/trivisonno" target="_blank">@Trivisonno <i class="fab fa-twitter"></i></a></em></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+<div id='map'></div>
+
+<script type="text/javascript" src="nov2022_precincts.js"></script>
+<script type="text/javascript" src="nov2022_wards.js"></script>
+<script type="text/javascript" src="cleveland_boundary.geojson.js"></script>
+<script type="text/javascript">
+
+viewMode = 'precinct';
+maxValue = 0;
+maxValueWard = 0;
+t = 60;
+grades = [];
+var updatedTime = ''
+var geojsonNew  = L.layerGroup();
+
+	var map= L.map('map', {"tap": false, zoomSnap:0.5, zoomDelta:0.5, fullscreenControl: true,}).setView([41.49, -81.69], 10);
+
+	var mq = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+
+	// control that shows state info on hover
+	var info = L.control();
+
+	info.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'info');
+		this.update();
+		return this._div;
+	};
+
+	info.update = function (props) {
+		if (viewMode == 'precinct') {
+			this._div.innerHTML = '<div class="progress" style="height:5px"><div class="progress-bar bg-info" id="timer" role="progressbar" style="width:'+t/60*100+'%" aria-valuenow="'+t/60*100+'" aria-valuemin="0" aria-valuemax="100"></div></div><p class="h6">Real-time Precinct Vote Totals</p>' +  (props ?
+	        '<b>' + updatedTime + "<br>"+props.Name + '</b><br>Voted in-person: ' + props.votes + '<br>Voted absentee: ' + props.absentee + '<br>Votes remaining: ' + props.remaining + '<br>Voter turnout: ' + props.turnout + '%' + '<br><br><b>Polling Location:<br>'+props.Location+'<br>'+props.Address+'</b>'
+	        : '<b>' + updatedTime + '</b><br>Hover over a precinct<br>Data from <a href="https://liveresults.boe.ohio.gov/widgets/cuyoh/2022-11-08/index.html" target="_blank">boe.ohio.gov</a><br>Updates every 60sec');
+				} else {
+					this._div.innerHTML = '<div class="progress" style="height:5px"><div class="progress-bar bg-info" id="timer" role="progressbar" style="width:'+t/60*100+'%" aria-valuenow="'+t/60*100+'" aria-valuemin="0" aria-valuemax="100"></div></div><p class="h6">Real-time Cleveland Ward Vote Totals</p>' +  (props ?
+			        '<b>' + updatedTime + "<br>"+props.Name + '</b><br>Voted in-person: ' + props.votes + '<br>Voted absentee: ' + props.absentee + '<br>Votes remaining: ' + props.remaining + '<br>Voter turnout: ' + props.turnout + '%'
+			        : '<b>' + updatedTime + '</b><br>Hover over a Cleveland ward<br>Data from <a href="https://liveresults.boe.ohio.gov/widgets/cuyoh/2022-11-08/index.html" target="_blank">boe.ohio.gov</a><br>Updates every 60sec');
+				}
+	};
+
+	info.addTo(map);
+
+
+	// get color depending on population density value
+	function getColor(v) {
+	  //https://www.rampgenerator.com/
+
+	    return v >= grades[9] ? '#060680' :
+	    v >= grades[8] ? '#21218E' :
+	    v >= grades[7] ? '#3D3D9C' :
+	    v >= grades[6] ? '#5959AA' :
+	    v >= grades[5] ? '#7474B8' :
+	    v >= grades[4] ? '#9090C6' :
+	    v >= grades[3] ? '#ACACD4' :
+	    v >= grades[2] ? '#C7C7E2' :
+	    v >= grades[1] ? '#E3E3F0' :
+	    v >= 0 ? '#FFFFFF' :
+	            '#FFFFFF';
+	}
+	var precinctJson = {};
+	function style(feature) {
+	  if (typeof precinctJson[feature.properties.Name] != 'undefined') {
+				feature.properties.turnout = precinctJson[feature.properties.Name]['turnout']
+	      feature.properties.votes = precinctJson[feature.properties.Name]['inPerson']
+	      feature.properties.absentee = precinctJson[feature.properties.Name]['abs']
+	      feature.properties.remaining = precinctJson[feature.properties.Name]['reg'] - feature.properties.votes - feature.properties.absentee
+	  } else {
+	    feature.properties.votes = 0;
+	    feature.properties.absentee = 0;
+	    feature.properties.remaining = 0;
+			feature.properties.turnout = 0;
+	  }
+
+	  if (feature.properties.votes+feature.properties.absentee != 0) {
+			//console.log(getColor(feature.properties.votes))
+	    styleP = {
+	        fillColor: getColor(feature.properties.votes+feature.properties.absentee),
+	        weight: 1,
+	        opacity: 1,
+	        color: 'rgb(124, 211, 212)',
+	        color: 'goldenrod',
+	        dashArray: '3',
+	        fillOpacity: 0.75
+	    }
+	  } else {
+	    styleP = {
+	      weight: .3,
+	      opacity: 1,
+	      color: 'goldenrod',
+	      dashArray: '3',
+	      fillOpacity: 0
+	    }
+	  }
+	  return styleP;
+	}
+
+	function highlightFeature(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			weight: 5,
+			color: 'goldenrod'
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+
+		info.update(layer.feature.properties);
+	}
+
+	var geojson;
+
+	function resetHighlight(e) {
+		geojson.resetStyle(e.target);
+		info.update();
+	}
+
+	function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click: zoomToFeature
+		});
+	}
+
+function loadGeojson() {
+	if (viewMode=='precinct') {
+		geojson = L.geoJson(precincts, {
+			style: style,
+			onEachFeature: onEachFeature
+		}).addTo(map);
+	} else {
+		geojson = L.geoJson(wards, {
+			style: style,
+			onEachFeature: onEachFeature
+		}).addTo(map);
+	}
+}
+loadGeojson()
+
+	var legend = L.control({position: 'bottomright'});
+
+	legend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			//grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+			labels = [],
+			from, to;
+
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getColor(from + 1) + '"></i> ' +
+				from + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
+	legend.addTo(map);
+
+	function rebuildGrades(maxValue) {
+	  grades = []
+	  for (i=0;i<10;i++) {
+	    grades.push(Math.round(0 + i * (maxValue / 9)))
+	  }
+	  map.removeControl(legend)
+	  legend.addTo(map);
+	}
+	rebuildGrades(maxValue)
+
+	progPct = t/60 * 100
+	$('#timer').css('width', progPct+'%').attr('aria-valuenow', progPct);
+	$('#timerSample').css('width', progPct+'%').attr('aria-valuenow', progPct);
+	function timer() {
+	  //document.getElementById("timer").value=i/60;
+	  progPct = t/60 * 100
+	  $('#timer').css('width', progPct+'%').attr('aria-valuenow', progPct);
+		$('#timerSample').css('width', progPct+'%').attr('aria-valuenow', progPct);
+	  if (t > 0) {
+	    t = t - 0.01;
+	  } else {
+	    t = 60
+	    loadJson()
+	  }
+	}
+	setInterval(timer, 10)
+
+	// s = 60
+	// progPct = s/60 * 100
+	// $('#timerSample').css('width', progPct+'%').attr('aria-valuenow', progPct);
+	// function timerSample() {
+	//   //document.getElementById("timer").value=i/60;
+	//   progPct = s/60 * 100
+	//   $('#timerSample').css('width', progPct+'%').attr('aria-valuenow', progPct);
+	//   if (s > 0) {
+	//     s = s - 0.3;
+	//   } else {
+	//     s = 60
+	//     loadJson()
+	//   }
+	// }
+	// setInterval(timerSample, 10)
+
+
+	function loadJson(){
+	  $.ajax({url: "turnout.json", crossDomain: true, dataType : 'json', cache: false, success: function(result){
+	    precinctJson = result
+	    updatedTime = precinctJson['lastUpdated']
+	    maxValue = precinctJson['maxValue']
+			maxValueWard = precinctJson['maxValueWard']
+			if (viewMode=='precinct') {
+	    	rebuildGrades(maxValue)
+			} else {
+				rebuildGrades(maxValueWard)
+			}
+	    geojson.setStyle(style);
+	    //info.update();
+	  }});
+	}
+	loadJson()
+
+
+	map.createPane('labels');
+	map.getPane('labels').style.zIndex = 650;
+	cleveland_boundary = L.geoJson(cleveland_boundary, {
+		style: {
+	    weight: 2,
+	    opacity: 0.75,
+	    color: 'purple',
+	    fillOpacity: 0
+	},
+	pane: 'labels',
+	interactive:false
+	}).addTo(map);
+
+
+
+	var toggleBtn =	L.easyButton('fa-sliders-h', function(btn, map){
+		  if (viewMode == 'precinct') {
+				viewMode = 'ward'
+				rebuildGrades(maxValueWard)
+			} else {
+				viewMode = 'precinct'
+				rebuildGrades(maxValue)
+			}
+			map.removeLayer(geojson)
+			loadGeojson()
+			info.update();
+
+		});
+	toggleBtn.button.title = 'Toggle between ward/precinct modes'
+	toggleBtn.addTo( map );
+
+
+	var infoBtn = L.easyButton('fa-info', function(btn, map){
+	  var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+	    keyboard: false
+	  })
+
+	  myModal.toggle()
+
+	});
+	infoBtn.button.title = 'More infomation'
+	infoBtn.addTo( map );
+
+	// user enters the tab (again)
+	document.addEventListener('focus', (e) => {
+		t=60;
+		loadJson();
+	});
+
+</script>
+
+
+
+</body>
+</html>
